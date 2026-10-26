@@ -1,7 +1,4 @@
-"""Try the classifier on sample messages without Telegram or the web server.
 
-Run from the project root:  python try_classifier.py
-"""
 import asyncio
 
 from dotenv import load_dotenv

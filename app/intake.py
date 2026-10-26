@@ -42,13 +42,7 @@ def _append(name: str, line: str) -> None:
 
 
 async def handle_message(msg: IncomingMessage, classifier: Classifier | None = None) -> ProcessedMessage | None:
-    """Single entry point for every message.
-
-    1. Save the raw message FIRST, so nothing is ever lost.
-    2. Classify it with AI (or a fallback if the AI fails).
-    3. Save the classified result.
-    Phase 3 will route the result to the right path.
-    """
+    
     log.info("[%s] %s: %s", msg.channel, msg.name, msg.message)
     _append("messages.jsonl", msg.model_dump_json())
 
