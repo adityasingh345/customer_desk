@@ -10,11 +10,15 @@ from .intake import handle_message, normalize_telegram
 
 log = logging.getLogger("customer_desk.telegram")
 
+DEFAULT_REPLY = "Got it. Your message has been received."
+
 #on_start runs when someone sends /start and replies with greeting
 async def on_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.effective_message.reply_text("Hi! Send us your question and we'll get back to you.")
 
 # on_text runs for every plain text message filters.TEXT & ~filters.COMMAND means “text that isn’t a /command”.
+
+#telegram asks handle message for the decision and sends the router's reply: the billing acknowledgement to billing message 
 async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     message = update.effective_message
@@ -27,8 +31,15 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     except ValidationError:
         await message.reply_text("Sorry, I couldn't read that. Please send a short text message.")
         return
-    await handle_message(msg)
-    await message.reply_text("Got it. Your message has been received.")
+    result = await handle_message(msg)
+    
+    if result is None or result.decision is None:
+        reply = DEFAULT_REPLY
+    elif result.decision.reply is None:
+        return 
+    else:
+        reply = result.decision.reply
+    await message.reply_text(reply)
     
 def build_application(token: str) -> Application:
     app = Application.builder().token(token).build()

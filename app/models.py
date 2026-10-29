@@ -55,3 +55,20 @@ class ProcessedMessage(BaseModel):
     message: IncomingMessage
     classification: Classification
     needs_review: bool = False
+    
+ #-------------phase 3 ---------------
+
+# RouteDecision
+
+class RouteDecision(BaseModel):
+    # what we want to do with the classified message 
+    queue: Category # it means which team it would go to 
+    reply: str | None = None # text to send back to the customer 
+    alert_owner: bool = False # ping the owner on telegram 
+    reason: str # good for debugging 
+
+class ProcessedMessage(BaseModel):
+    message: IncomingMessage
+    classification: Classification
+    needs_review: bool = False 
+    decision: RouteDecision | None = None 
